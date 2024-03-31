@@ -12,7 +12,6 @@ def get_user_data(username, access_token):
     headers = {"Authorization": f"token {access_token}"}
     response = requests.get(user_url, headers=headers)
     if response.status_code == 200:
-        print(response.json()["repos_url"])
         return response.json()
     else:
         return {"Error": response.status_code}
@@ -97,10 +96,8 @@ def get_github_statistics(username, access_token):
 
 
 
-# Example usage:
 username = "nimisha-sara"
 access_token = os.getenv("GITHUB_TOKEN")
-print(access_token)
 statistics = get_github_statistics(username, access_token)
 if statistics:
     for key, value in statistics.items():
