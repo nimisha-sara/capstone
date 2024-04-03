@@ -5,6 +5,10 @@ from nltk.tag import pos_tag
 import language_tool_python
 
 
+nltk.download('averaged_perceptron_tagger')
+nltk.download('punkt')
+
+
 class ResumeChecker:
     def __init__(self):
         self.tool = language_tool_python.LanguageTool('en-US')
