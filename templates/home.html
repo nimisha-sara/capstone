@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}ResuPar{% endblock %}
+{% block styles %}
+<link href="{{ url_for('static',filename='styles/home.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div class="content">
+    <div class="main">
+        <h1 class="display-4">ResuPar</h1>
+        <div class="btn-group">
+            <form action="{{ url_for('jobseeker')}}" method="post">
+                <button type="submit" class="btn rounded-lg">Job Seeker</button>
+            </form>
+            <form action="{{ url_for('recruiter')}}" method="post">
+                <button type="submit" class="btn rounded-lg">Recruiter</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -8,7 +8,7 @@ class GitHubStatistics:
     Class to retrieve GitHub statistics for a user
     """
 
-    def __init__(self, username: str, access_token: str):
+    def __init__(self, username: str):
         """
         Initialize GitHubStatistics with the user's GitHub username and access token
 
@@ -17,7 +17,7 @@ class GitHubStatistics:
             access_token (str): GitHub access token
         """
         self.username = username
-        self.access_token = access_token
+        self.access_token = os.getenv("GITHUB_TOKEN")
 
     def _get_user_data(self) -> dict:
         """
@@ -27,9 +27,11 @@ class GitHubStatistics:
             dict: User data.
         """
         user_url = f"https://api.github.com/users/{self.username}"
-        headers = {"Authorization": f"token {self.access_token}"}
-        response = requests.get(user_url, headers=headers)
+        # headers = {"Authorization": f"token {self.access_token}"}
+        # response = requests.get(user_url, headers=headers)
+        response = requests.get(user_url)
         if response.status_code == 200:
+            print("\n====================\\nTOKEN: ",self.access_token, "\n", response.json(), "\n====================\n")
             return response.json()
         else:
             return {"Error": response.status_code}
@@ -44,8 +46,9 @@ class GitHubStatistics:
         last_year_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ")
         commits = 0
         events_url = f"https://api.github.com/users/{self.username}/events"
-        headers = {"Authorization": f"token {self.access_token}"}
-        response = requests.get(events_url, headers=headers)
+        # headers = {"Authorization": f"token {self.access_token}"}
+        response = requests.get(events_url)
+        # response = requests.get(events_url, headers=headers)
         if response.status_code == 200:
             events = response.json()
             for event in events:
@@ -66,8 +69,9 @@ class GitHubStatistics:
         page = 1
         while True:
             prs_url = f"https://api.github.com/users/{self.username}/events?page={page}"
-            headers = {"Authorization": f"token {self.access_token}"}
-            response = requests.get(prs_url, headers=headers)
+            # headers = {"Authorization": f"token {self.access_token}"}
+            # response = requests.get(prs_url, headers=headers)
+            response = requests.get(prs_url)
             if response.status_code == 200:
                 events = response.json()
                 if not events:  # No more events, stop pagination
@@ -105,10 +109,11 @@ class GitHubStatistics:
             dict: GitHub statistics
         """
         user_data = self._get_user_data()
+        print("\n=======================\n",user_data, "\n=======================\n")
         if user_data:
-            repos_url = user_data["repos_url"]
-            headers = {"Authorization": f"token {self.access_token}"}
-            repos_response = requests.get(repos_url, headers=headers)
+            # repos_url = user_data["repos_url"]
+            # headers = {"Authorization": f"token {self.access_token}"}
+            # repos_response = requests.get(repos_url, headers=headers)
             if repos_response.status_code == 200:
                 repos = repos_response.json()
                 prs = self._get_all_prs()
@@ -146,8 +151,8 @@ class GitHubStatistics:
 # Example usage:
 if __name__ == "__main__":
     username = "nimisha-sara"
-    access_token = os.getenv("GITHUB_TOKEN")
-    statistics = GitHubStatistics(username, access_token).get_statistics()
+    
+    statistics = GitHubStatistics(username).get_statistics()
     if statistics:
         for key, value in statistics.items():
             print(f"{key}: {value}")

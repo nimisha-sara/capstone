@@ -1,0 +1,31 @@
+.content {
+    position: relative;
+    min-height: calc(100vh - 56px - 25px);
+}
+
+.main {
+    text-align: center;
+    position: absolute;
+
+    top: 40%;
+    left: 25%;
+    padding: 0;
+    margin: -50px 0 0 -50px;
+}
+
+.main h1 {
+    font-size: 3rem;
+}
+
+.btn-group {
+    margin-top: 50px;
+}
+
+.btn {
+    margin-inline: 5rem;
+    background-color: #fff;
+    color: #000;
+    width: 20vw;
+    height: 10vh;
+    font-weight: 700;
+}

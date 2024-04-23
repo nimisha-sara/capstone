@@ -12,3 +12,4 @@ tokenizers==0.15.2
 torch==2.2.2
 tqdm==4.66.2
 transformers==4.36.2
+fastapi==0.110.1

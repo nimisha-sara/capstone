@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}JobSeeker Resume Analysis{% endblock %}
+{% block styles %}
+<link href="{{ url_for('static',filename='styles/job-seeker.css') }}" rel="stylesheet">
+<style>
+    .loader {
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10vh;
+        width: 60px;
+        aspect-ratio: 1;
+        color: #fcfcfc;
+        position: relative;
+        display: none;
+    }
+
+    .loader::before,
+    .loader::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(currentColor 0 0) 0 calc(var(--s, 0)*-100%)/100% calc(100%/3),
+            repeating-linear-gradient(90deg, currentColor 0 25%, #0000 0 50%) calc(var(--s, 0)*100%) 50%/calc(4*100%/3) calc(100%/3);
+        background-repeat: no-repeat;
+        animation: l26 2s infinite;
+    }
+
+    .loader::after {
+        --s: -1;
+    }
+
+    @keyframes l26 {
+
+        0%,
+        10% {
+            transform: translateY(calc(var(--s, 1)*0));
+            background-position: 0 calc(var(--s, 0)*-100%), calc(var(--s, 0)*100%) 50%
+        }
+
+        33% {
+            transform: translateY(calc(var(--s, 1)*-20%));
+            background-position: 0 calc(var(--s, 0)*-100%), calc(var(--s, 0)*100%) 50%
+        }
+
+        66% {
+            transform: translateY(calc(var(--s, 1)*-20%));
+            background-position: 0 calc(var(--s, 0)*-100%), calc(var(--s, 0)*100% + 100%) 50%
+        }
+
+        90%,
+        100% {
+            transform: translateY(calc(var(--s, 1)*0));
+            background-position: 0 calc(var(--s, 0)*-100%), calc(var(--s, 0)*100% + 100%) 50%
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<script>
+    function loading() {
+        $(".loader").show();
+        $(".content").hide();
+    }
+</script>
+<div class="content">
+    <h1>Hey There <span class="hand-wave">👋</span></h1>
+    <p style="margin-bottom: 8vh;">Looking for a job? Get your Resume ATS & Job ready now!</p>
+    <h4>Upload your resume</h4>
+    <div class="file-upload-container">
+        <form action="{{ url_for('resume_report')}}" method="post" enctype="multipart/form-data">
+            <input class="file-upload-button" type="file" name="file"><br>
+            <button type="submit" onclick="loading();">Upload</button>
+        </form>
+    </div>
+</div>
+<div class="loader"></div>
+{% endblock %}

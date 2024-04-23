@@ -58,7 +58,7 @@ class ResumeRanker:
         sentence_embeddings = self.sentence_embedding(job_description, resumes)
         scores = self.calculate_similarity_score(sentence_embeddings)
         scores = {index + 1: item for index, item in enumerate(scores)}
-        scores = {k: v for k, v in sorted(scores.items(), key=lambda item: item[1], reverse=True)}
+        scores = {k: v for k, v in sorted(scores.items(), key=lambda item: item[1])}
         return scores
 
 

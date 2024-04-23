@@ -41,7 +41,7 @@ class ResumeChecker:
             list: List of detected grammar and spelling errors.
         """
         matches = self.tool.check(text)
-        errors = [match.msg for match in matches]
+        errors = [[match.message, match.replacements, ] for match in matches]
         return errors
 
     def check_action_verbs(self, text: str) -> dict:
@@ -98,21 +98,6 @@ class ResumeChecker:
         footprint_links = [url for url in urls if re.search(pattern, url, re.IGNORECASE)]
         return footprint_links
 
-    def check_unprofessional_email(self, email: str) -> bool:
-        """
-        Check for unprofessional email ID patterns.
-
-        Args:
-            email (str): Email ID to check.
-
-        Returns:
-            bool: True if the email is unprofessional, False otherwise.
-        """
-        unprofessional_patterns = ["partygirl", "studmuffin", "cuteguy", "hotbabe", "lovesex", "420", "69"]
-        pattern = "|".join(unprofessional_patterns)
-        if re.search(pattern, email, re.IGNORECASE):
-            return True
-        return False
 
     def check_personal_pronouns(self, text: str) -> list:
         """
@@ -141,40 +126,23 @@ class ResumeChecker:
         if re.search(r'\bReferences\b|\bReferees\b', text, re.IGNORECASE):
             return True
         return False
+    
+    def perform_all_checks(self, text: str) -> dict:
+        """
+        Perform all checks on the given text.
 
+        Args:
+            text (str): Text to perform checks on.
 
-# Example usage:
-if __name__ == "__main__":
-    checker = ResumeChecker()
+        Returns:
+            dict: Dictionary containing the results of all checks.
+        """
+        return {
+            "grammar_errors": self.grammar_check(text),
+            "action_verbs": self.check_action_verbs(text),
+            "passive_language": self.check_passive_language(text),
+            "footprint_links": self.check_digital_footprint_links(text),
+            "personal_pronouns": self.check_personal_pronouns(text),
+            "references_section": self.check_references_section(text)
+        }
 
-    sample_text = """
-    The cake was eaten by John. The report will be submitted tomorrow.
-    """
-    print("Passive Language:", checker.check_passive_language(sample_text))
-
-    sample_text = """
-    John implemented a new software system. Mary developed a marketing strategy. The team managed the project effectively.
-    """
-    all_verbs, strong_verbs = checker.check_action_verbs(sample_text)
-    print("Action Verbs:", all_verbs)
-    print("Strong Action Verbs:", strong_verbs)
-
-    sample_text = """
-    John's LinkedIn profile: https://www.linkedin.com/in/john-doe. GitHub: https://github.com/johndoe.
-    """
-    print("Digital Footprint Links:", checker.check_digital_footprint_links(sample_text))
-
-    print("Unprofessional Email Check:", checker.check_unprofessional_email("hotbabe123@gmail.com"))
-
-    sample_text = """
-    I am writing my resume. You should proofread it. He has experience in software development.
-    She is a skilled project manager. They are seeking new opportunities.
-    """
-    print("Personal Pronouns:", checker.check_personal_pronouns(sample_text))
-
-    sample_text = """
-    References:
-    1. XYZ person
-    2. Abc Person
-    """
-    print("References Section Check:", checker.check_references_section(sample_text))
