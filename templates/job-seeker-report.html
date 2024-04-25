@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}JobSeeker Resume Analysis{% endblock %}
 {% block styles %}
-<link href="{{ url_for('static',filename='styles/job-seeker-report.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', path='styles/job-seeker-report.css') }}" rel="stylesheet">
 <style>
     .content {
         max-width: fit-content;
@@ -17,14 +17,41 @@
 
 <div class="content">
     <h1>Resume Report</h1>
-        <p>NER is mapping</p><br><br>
-        <h2 class="name">Hey there { }</h2>
-    <p>NER: <br></p>
-    {% for key, value in values.items %}
-    <p>key</p>
-    {% endfor %}
-    <br><br>
-    <p>Health: <br>{ }</p>
+    {% if 'per' in ner %}
+    <h2 class="name">Hey there <span style="color: #008f00;">{{ ner.per[0] }}</span></h2>
+    {% else %}
+    <h2 class="name red">Hey there <span style="color: #cd0505;">_____</span></h2>
+    <p>PS. I couldn't find your name in your Resume.</p>
+    {% endif %}
+
+    <div class="report-cards">
+        <input type="radio" name="position" checked />
+        <input type="radio" name="position" />
+        <input type="radio" name="position" />
+        <input type="radio" name="position" />
+        <input type="radio" name="position" />
+        <main id="carousel">
+            <div class="item sections">
+                <h3>Sections</h3>
+                <p>There are 5 vital sections in a resume</p>
+                <ul>
+                    <li>Experience {% if 'Experience' in ner['SECTION'] or 'Work Experience' in ner['sections']%}✅{%
+                        else %}❌{% endif %}</li>
+                    <li>Projects {% if 'Projects' in ner['SECTION'] %}✅{% else %}❌{% endif %}</li>
+                    <li>Skills {% if 'Skills' in ner['SECTION'] %}✅{% else %}❌{% endif %}</li>
+                    <li>Education {% if 'Education' in ner['SECTION'] %}✅{% else %}❌{% endif %}</li>
+                    <li>Objective {% if 'Objective' in ner['SECTION'] or 'Summary' in ner['ections'] %}✅{% else %}❌{%
+                        endif %}</li>
+                </ul>
+                <p>NOTE: Other sections such as volunteership, hobbies, etc can be included depending on personal
+                    preference</p>
+            </div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <div class="item"></div>
+            <main>
+    </div>
 </div>
 
 {% endblock %}
