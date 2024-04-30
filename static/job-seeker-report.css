@@ -1,0 +1,26 @@
+.content {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10vh;
+    padding: 10px;
+}
+
+.carousel-item{
+    min-width: 40rem;
+    min-height: 20rem;
+    padding: 40px 100px;
+}
+
+.error{
+    color: #cd0505;
+}
+
+.skill{
+    background-color: #f0f0f0;
+    color: #181818;
+    padding: 5px;
+    margin: 5px;
+    font-weight: 600;
+    border-radius: 10%;
+}
