@@ -56,7 +56,7 @@ if __name__ == "__main__":
     classifier = JobClassifier()
 
     # Example text for prediction
-    new_text = "Python Developer"
+    new_text = "Python Developer ksjdljqlwdjladjl"
 
     # Make prediction
     predicted_job_role = classifier.predict_job_role(new_text)

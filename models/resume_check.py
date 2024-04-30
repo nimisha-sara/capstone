@@ -82,7 +82,7 @@ class ResumeChecker:
                     break
         return passive_sentences
 
-    def check_digital_footprint_links(self, text: str) -> list:
+    def check_digital_footprint_links(self, text: str) -> dict:
         """
         Check for digital footprint links in the text.
 
@@ -90,13 +90,17 @@ class ResumeChecker:
             text (str): Text to check for digital footprint links.
 
         Returns:
-            list: List of digital footprint links found in the text.
+            dict: Dictionary with platform name as key and link as value.
         """
-        platforms = ["linkedin", "github", "medium", "stackoverflow", "codechef", "codeforces"]
-        pattern = "|".join(platforms)
-        urls = re.findall(r'\b(?:https?://)?(?:www\.)?\w+\.(?:com|net|org|io)/?\S*\b', text)
-        footprint_links = [url for url in urls if re.search(pattern, url, re.IGNORECASE)]
-        return footprint_links
+        platforms = ["linkedin", "github", "medium", "stackoverflow",
+                     "codechef", "codeforces", "dribble", "hackerrank"]
+        platform_links = {}
+        for platform in platforms:
+            pattern = rf'\b(?:https?://)?(?:www\.)?{platform}\.com/\S*'
+            match = re.search(pattern, text, re.IGNORECASE)
+            if match:
+                platform_links[platform] = match.group(0)
+        return platform_links
 
 
     def check_personal_pronouns(self, text: str) -> list:
