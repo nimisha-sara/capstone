@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import os
+import re
 import shutil
 
 from utils import PDF, GitHubStatistics
@@ -46,12 +47,14 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
 
     job_role = JobClassifier().predict_job_role(resume_text[0]["text"])
 
-    resume_text[0]["text"] = "".join(
-        resume_text[0]["text"].replace(skill, "") for skill in ner["skill"]
-    )
-    links = " ".join(resume_text[0]["links"])
-    resume_health = ResumeChecker().perform_all_checks(resume_text[0]["text"] + links)
+    words_to_replace = ner['skill'] + ner['org']
+    words_to_replace = [re.escape(word) for word in words_to_replace]
+    replace_pattern = re.compile(r'\b(?:' + '|'.join(words_to_replace) + r')\b', flags=re.IGNORECASE)
+    resume_text[0]["text"] = replace_pattern.sub("", resume_text[0]["text"])
 
+    links = " ".join(resume_text[0]["links"])
+
+    resume_health = ResumeChecker().perform_all_checks(resume_text[0]["text"] + links)
     os.remove(filename)
     return templates.TemplateResponse(
         request=request,
@@ -60,19 +63,20 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
     )
 
 
-@app.post("/ranking")
+@app.post("/recruiter/match")
 def upload_file(
-    job_description: str = Query(
-        ...,
-        description="Job Description of the role",
-        examples="We are seeking a skilled and motivated Software Engineer with a strong background in computer science, particularly in blockchain technology. As a Software Engineer, you will play a key role in designing, developing, and implementing blockchain-based solutions to address complex business challenges. You will collaborate with cross-functional teams to deliver high-quality software products that meet the needs of our clients and stakeholders.", # type: ignore
-    ),
-    uploaded_files: list[UploadFile] = File(..., description="Resume Files to Rank"),
+    job_description,
+    uploaded_files: list[UploadFile] = File(...),
 ):
-    pdf_reader = PDF([f"./tests/test_set/{file.filename}" for file in uploaded_files])
-    resume_texts = [resume for resume in pdf_reader.process_pdf() if resume["status"]][
-        0
-    ]
+    filenames = []
+    for file in uploaded_files:
+        with open(f"uploads/{file.filename}", "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        filenames.append(f"./uploads/{file.filename}")
+
+    pdf_reader = PDF(filenames).process_pdf()
+    resume_texts = [resume for resume in pdf_reader if resume["status"]]
+    error_files = [resume["filename"] for resume in pdf_reader if not resume["status"]]
 
     ranking = ResumeRanker().get_similarity(
         job_description, [resume["text"] for resume in resume_texts]
