@@ -1,5 +1,5 @@
-import re
 import fitz
+import re
 from tqdm import tqdm
 
 
@@ -29,7 +29,7 @@ class PDF:
 
         with fitz.open(file) as doc:
             for page in doc:
-                text = page.get_text()
+                text = page.get_text() # type: ignore
                 file_text += text
         return self.clean_text(file_text)
 
@@ -113,7 +113,7 @@ class PDF:
                         }
                     )
                 except Exception as e:
-                    self.output_text.append({"status": False, "text": str(e)})
+                    self.output_text.append({"status": False, "text": str(e), "filename": file})
             else:
-                self.output_text.append({"status": False, "text": "Not a .pdf file"})
+                self.output_text.append({"status": False, "text": "Not a .pdf file", "filename": file})
         return self.output_text
