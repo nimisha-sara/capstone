@@ -27,11 +27,10 @@ class GitHubStatistics:
             dict: User data.
         """
         user_url = f"https://api.github.com/users/{self.username}"
-        # headers = {"Authorization": f"token {self.access_token}"}
-        # response = requests.get(user_url, headers=headers)
+        headers = {"Authorization": f"token {self.access_token}"}
+        response = requests.get(user_url, headers=headers)
         response = requests.get(user_url)
         if response.status_code == 200:
-            print("\n====================\\nTOKEN: ",self.access_token, "\n", response.json(), "\n====================\n")
             return response.json()
         else:
             return {"Error": response.status_code}
@@ -46,9 +45,9 @@ class GitHubStatistics:
         last_year_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ")
         commits = 0
         events_url = f"https://api.github.com/users/{self.username}/events"
-        # headers = {"Authorization": f"token {self.access_token}"}
+        headers = {"Authorization": f"token {self.access_token}"}
         response = requests.get(events_url)
-        # response = requests.get(events_url, headers=headers)
+        response = requests.get(events_url, headers=headers)
         if response.status_code == 200:
             events = response.json()
             for event in events:
@@ -69,8 +68,8 @@ class GitHubStatistics:
         page = 1
         while True:
             prs_url = f"https://api.github.com/users/{self.username}/events?page={page}"
-            # headers = {"Authorization": f"token {self.access_token}"}
-            # response = requests.get(prs_url, headers=headers)
+            headers = {"Authorization": f"token {self.access_token}"}
+            response = requests.get(prs_url, headers=headers)
             response = requests.get(prs_url)
             if response.status_code == 200:
                 events = response.json()
@@ -111,9 +110,9 @@ class GitHubStatistics:
         user_data = self._get_user_data()
         print("\n=======================\n",user_data, "\n=======================\n")
         if user_data:
-            # repos_url = user_data["repos_url"]
-            # headers = {"Authorization": f"token {self.access_token}"}
-            # repos_response = requests.get(repos_url, headers=headers)
+            repos_url = user_data["repos_url"]
+            headers = {"Authorization": f"token {self.access_token}"}
+            repos_response = requests.get(repos_url, headers=headers)
             if repos_response.status_code == 200:
                 repos = repos_response.json()
                 prs = self._get_all_prs()
