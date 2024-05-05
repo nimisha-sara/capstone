@@ -130,7 +130,7 @@ class PDF:
         for file in self.file_paths:
             if path_type == "url":
                 if "/file/" in file and "/view" in file:
-                    fileid = re.findall(pattern='[-\w]{25,}', string=file)[0]
+                    fileid = re.findall(pattern=r'[-\w]{25,}', string=file)[0]
                     file = f"https://drive.google.com/uc?id={fileid}"
                 else:
                     return {
