@@ -23,4 +23,8 @@ class CustomNER:
         entities = {}
         for ent in doc.ents:
             entities[ent.text] = ent.label_
+        entities = {
+            key.lower(): [k.title() for k, v in entities[0].items() if v == key]
+            for key in set(entities[0].values())
+        }
         return entities
