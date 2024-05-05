@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lskjd</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Josefin+Slab:ital,wght@0,100..700;1,100..700&family=Poppins:wght@300;400&display=swap');
+
+        html,
+        body {
+            font-family: 'Josefin Slab', sans-serif;
+            background-color: #222;
+            color: #fcfcfc;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav div.container {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 45%;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        p,
+        span,
+        button {
+            font-weight: 700;
+        }
+    </style>
+    <link href="static/recruiter-report.css" rel="stylesheet">
+</head>
+
+<body>
+    <script>
+        function setProgress(percent) {
+            const progressBar = document.getElementById('progressBar');
+            const degrees = (percent / 100) * 360;
+            if (percent <= 50) {
+                progressBar.style.transform = `rotate(${degrees}deg)`;
+            } else {
+                progressBar.classList.add('fill');
+                progressBar.style.transform = `rotate(180deg)`;
+            }
+        }
+
+        window.onload = function onLoad() {
+            setProgress(34)
+        };
+    </script>
+    <div class="options">
+        <button>download <span class="material-symbols-outlined">download</span></button>
+    </div>
+
+    <div class="content">
+        <div class="slideshow-container">
+            <div class="mySlides">
+                <div class="slide-header">
+                    <div>
+                        <h2>Name</h2>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar">34</div>
+                    </div>
+                </div>
+                <p class="author">- John Keats</p>
+            </div>
+
+            <div class="mySlides">
+                <q>But man is not made for defeat. A man can be destroyed but not defeated.</q>
+                <p class="author">- Ernest Hemingway</p>
+            </div>
+
+            <div class="mySlides">
+                <q>I have not failed. I've just found 10,000 ways that won't work.</q>
+                <p class="author">- Thomas A. Edison</p>
+            </div>
+
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+
+        </div>
+
+        <div class="dot-container">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </div>
+
+    <script>
+        var slideIndex = 1;
+        showSlides(slideIndex);
+
+        function plusSlides(n) {
+            showSlides(slideIndex += n);
+        }
+
+        function currentSlide(n) {
+            showSlides(slideIndex = n);
+        }
+
+        function showSlides(n) {
+            var i;
+            var slides = document.getElementsByClassName("mySlides");
+            var dots = document.getElementsByClassName("dot");
+            if (n > slides.length) { slideIndex = 1 }
+            if (n < 1) { slideIndex = slides.length }
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            slides[slideIndex - 1].style.display = "block";
+            dots[slideIndex - 1].className += " active";
+        }
+    </script>
+</body>
+
+</html>
