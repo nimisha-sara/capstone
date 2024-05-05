@@ -1,26 +1,80 @@
-.content {
-    max-width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10vh;
-    padding: 10px;
+.sidenav {
+    height: 100%;
+    width: 15vw;
+    position: fixed;
+    z-index: 1;
+    top: 2.5rem;
+    left: 0;
+    background-color: #222;
+    overflow: hidden;
+    padding-top: 20px;
 }
 
-.carousel-item{
-    min-width: 40rem;
-    min-height: 20rem;
-    padding: 40px 100px;
+.sidenav button {
+    min-width: 13rem;
+    padding: 0.5rem 1.5rem 1.5rem 0.5rem;
+    font-size: 1.5vw;
+    background-color: #1b1b1b;
+    color: #fcfcfc;
+    margin: 5px 0;
+    font-weight: 400;
+    text-align: center;
+    border: none;
+    outline: none;
 }
 
-.error{
+.sidenav button:hover {
+    color: #f1f1f1;
+    transform: scale(0.8);
+}
+
+
+
+.main {
+    margin-left: 23vw;   /* Same as the width of the sidenav */
+    background-color: #1b1b1b;
+    margin-right: 3vw;
+    padding: 2rem;
+    display: grid;
+    align-items: center;
+    height: 80vh;
+    min-width: 40vw;
+    overflow: auto;
+    font-size: 20px;
+
+}
+
+#sections,
+#contact,
+#skills,
+#pronoun,
+#footprint,
+#passive,
+#action {
+    display: none;
+}
+
+.error {
     color: #cd0505;
 }
 
-.skill{
-    background-color: #f0f0f0;
+.skill {
+    background-color: #fcfcfc;
     color: #181818;
-    padding: 5px;
-    margin: 5px;
+    padding: 6px;
+    margin: 8px;
+    margin-top: 10px;
     font-weight: 600;
-    border-radius: 10%;
+    border-radius: 25px;
+}
+
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+
+    .sidenav a {
+        font-size: 18px;
+    }
 }

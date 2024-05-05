@@ -1,132 +1,156 @@
 {% extends "base.html" %}
-{% block title %}JobSeeker Resume Analysis{% endblock %}
+{% block title %}JobSeeker Resume Report{% endblock %}
 {% block styles %}
 <link href="{{ url_for('static', path='job-seeker-report.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
 
+<script>
+    function navsDisplay(buttonValue) {
+        $(document).ready(function () {
+            $(`#${buttonValue}-btn`).click(function () {
+                $('.navs').hide()
+                $('.btn').css({ "color": "#fcfcfc", "background-color": "#181818" });
+                $(`#${buttonValue}`).show()
+                $(`#${buttonValue}-btn`).css({ "background-color": "#fcfcfc", "color": "#181818" });
+            });
+        });
+    }
+</script>
+
+
 <div class="content">
-    <h1>Resume Report</h1>
-    {% if 'per' in ner %}
-    <h2 class="name">Hey there <span style="color: #008f00;">{{ ner.per[0] }}</span></h2>
-    {% else %}
-    <h2 class="name red">Hey there <span style="color: #cd0505;">_____</span></h2>
-    <p>PS. I couldn't find your name in your Resume.</p>
-    {% endif %}
-
-    <div id="carouselExampleIndicators" class="carousel slide" data-interval="false" data-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="5"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="6"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="7"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="carousel-item active"> <!-- item 1 -->
-                <h3>Sections</h3>
-                <p>There are 5 vital sections in a resume</p>
-                <ul>
-                    <li>Experience {% if 'Experience' in ner.section or 'Work Experience' in ner.section %}✅{% else
-                        %}❌{% endif %}</li>
-                    <li>Projects {% if 'Projects' in ner.section %}✅{% else %}❌{% endif %}</li>
-                    <li>Skills {% if 'Skills' in ner.section %}✅{% else %}❌{% endif %}</li>
-                    <li>Education {% if 'Education' in ner.section %}✅{% else %}❌{% endif %}</li>
-                    <li>Objective {% if 'Objective' in ner.section or 'Summary' in ner.section %}✅{% else %}❌{% endif %}
-                    </li>
-                </ul>
-                <p>NOTE: Other sections such as volunteership, hobbies, etc can be included depending on personal
-                    preference</p>
-            </div>
-            <div class="carousel-item"> <!-- item 2 -->
-                <h3>Contact</h3>
-                <ul>
-                    {% if ('phone' in ner) and ('email' in ner) %}
-                    <li>Phone: {% if 'phone' in ner %}<span>{{ ner.phone[0] }} ✅</span>{% else %}<span
-                            class="error">❌</span>{% endif %}</li>
-                    <li>Email: {% if 'email' in ner %}<span>{{ ner.email[0]|lower }} ✅</span>{% else %}<span
-                            class="error">❌</span>{% endif %}</li>
-                </ul>
-            </div>
-            <div class="carousel-item"> <!-- item 3 -->
-                <h3>Skills</h3>
-                <p style="max-width: 20rem;">
-                    {% for skill in ner.skill %}
-                    <span class="skill">{{ skill }}</span>
-                    {% endfor %}
-                </p>
-
-            </div>
-            <div class="carousel-item"> <!-- item 4 -->
-                <h3>Personal Pronouns</h3>
-                {% if resume_health.personal_pronouns|length > 0 %}
-                <p style="max-width: 20rem;">⛔
-                    {% for pronoun in resume_health.personal_pronouns %}
-                    <span class="skill">{{ pronoun }}</span>
-                    {% endfor %}
-                </p>
-                {% else %}
-                <p>🙌 NONE FOUND</p>
-                {% endif %}
-                <p>NOTE: Personal pronouns are a big "NO" on resumes. Steer clear of them!</p>
-            </div>
-
-            <div class="carousel-item"> <!-- item 5 -->
-                <h3>Digital Footprint</h3>
-                <ul>
-                    <li>Linkedin (must-have) {% if 'linkedin' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
-                    </li>
-                    <li>Github (must-have) {% if 'github' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
-                    </li>
-                    <li>Dribble {% if 'dribble' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
-                    <li>Codeforces {% if 'codeforces' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
-                    <li>Codechef {% if 'codechef' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
-                    <li>Stackoverflow {% if 'stackoverflow' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
-                    </li>
-                    <li>HackerRank {% if 'hackerrank' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
-                    <li>Medium {% if 'medium' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
-                </ul>
-                <p>NOTE: Linkedin and GitHub are must have's for a techie!</p>
-            </div>
-            <div class="carousel-item"> <!-- item 6 -->
-                <h3>Passive Language</h3>
-                {% if resume_health.personal_pronouns|length > 0 %}
-                <ul>
-                    {% for str in resume_health.passive_language %}
-                    <li>{{ str }}</li>
-                    {% endfor %}
-                </ul>
-                {% else %}
-                <p>🙌 NONE FOUND</p>
-
-                <p>NOTE: Passive language must most definitely not be there in a resume</p>
-            </div>
-            <div class="carousel-item"> <!-- item 7 -->
-                <h3>Action Verbs</h3>
-                {% if resume_health.action_verbs['verbs']|length > 0 %}
-                <p style="max-width: 20rem;">
-                    {% for verb in resume_health.action_verbs['verbs'] %}
-                    <span class="skill">{{ verb }}</span>
-                    {% endfor %}
-                </p>
-                {% else %}
-                <p>❌ NONE FOUND</p>
-
-                <p>NOTE: Action verbs are to be used very frequently in a resume</p>
-            </div>
+    <div class="sidenav">
+        <div class="links">
+            <button id="name-btn" class="btn" onclick="navsDisplay('name');">Name</button>
+            <button id="sections-btn" class="btn" onclick="navsDisplay('sections');">Sections</button>
+            <button id="contact-btn" class="btn" onclick="navsDisplay('contact');">Contact</button>
+            <button id="skills-btn" class="btn" onclick="navsDisplay('skills');">Skills</button>
+            <button id="pronoun-btn" class="btn" onclick="navsDisplay('pronoun');">Personal Pronoun</button>
+            <button id="footprint-btn" class="btn" onclick="navsDisplay('footprint');">Digital Footprint</button>
+            <button id="passive-btn" class="btn" onclick="navsDisplay('passive');">Passive Language</button>
+            <button id="action-btn" class="btn" onclick="navsDisplay('action');">Action Verbs</button>
+            <!-- <button id="grammar-btn" onclick="navsDisplay('grammar');">Grammar</button> -->
         </div>
-        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
+    </div>
+
+    <div class="main">
+        <div id="name" class="navs" data-num="1">
+            {% if 'per' in ner %}
+            <h2>Hey there <span style="color: #008f00;">{{ ner.per[0] }}</span></h2>
+            {% else %}
+            <h2 class="red">Hey there <span style="color: #cd0505;">_____</span></h2>
+            <p>PS. I couldn't find your name in your Resume.</p><br>
+            {% endif %}
+            <p>Your profile seems to be best suited for the role of {{ job_role }}</p>
+            <ul>
+                <li>Phone: {% if 'phone' in ner %}<span>{{ ner.phone[0] }} ✅</span>{% else %}<span
+                        class="error">❌</span>{% endif %}</li>
+                <li>Email: {% if 'email' in ner %}<span>{{ ner.email[0]|lower }} ✅</span>{% else %}<span
+                        class="error">❌</span>{% endif %}</li>
+            </ul>
+        </div>
+
+        <div id="sections" class="navs" data-num="2">
+            <h3>Sections</h3>
+            <p>There are 5 vital sections in a resume</p>
+            <ul>
+                <li>Experience {% if 'Experience' in ner.section or 'Work Experience' in ner.section %}✅{% else
+                    %}❌{% endif %}</li>
+                <li>Projects {% if 'Projects' in ner.section %}✅{% else %}❌{% endif %}</li>
+                <li>Skills {% if 'Skills' in ner.section %}✅{% else %}❌{% endif %}</li>
+                <li>Education {% if 'Education' in ner.section %}✅{% else %}❌{% endif %}</li>
+                <li>Objective {% if 'Objective' in ner.section or 'Summary' in ner.section %}✅{% else %}❌{% endif %}
+                </li>
+            </ul>
+            <p>NOTE: Other sections such as volunteership, hobbies, etc can be included depending on personal
+                preference</p>
+        </div>
+
+        <div id="contact" class="navs" data-num="3">
+            <h3>Grammar</h3>
+            <ul>
+                <li>Phone: {% if 'phone' in ner %}<span>{{ ner.phone[0] }} ✅</span>{% else %}<span
+                        class="error">❌</span>{% endif %}</li>
+                <li>Email: {% if 'email' in ner %}<span>{{ ner.email[0]|lower }} ✅</span>{% else %}<span
+                        class="error">❌</span>{% endif %}</li>
+            </ul>
+        </div>
+
+        <div id="skills" class="navs" data-num="4">
+            <h3>Skills</h3>
+            <p style="max-width: 40rem;">
+                {% for skill in ner.skill %}
+                <span class="skill">{{ skill }}</span>
+                {% endfor %}
+            </p>
+        </div>
+
+        <div id="pronoun" class="navs" data-num="5">
+            <h3>Personal Pronouns</h3>
+            {% if resume_health.personal_pronouns|length > 0 %}
+            <p>⛔
+                {% for pronoun in resume_health.personal_pronouns %}
+                <span class="skill">{{ pronoun }}</span>
+                {% endfor %}
+            </p>
+            {% else %}
+            <p>🙌 NONE FOUND</p>
+            {% endif %}
+            <p>NOTE: Personal pronouns are a big "NO" on resumes. Steer clear of them!</p>
+        </div>
+
+        <div id="footprint" class="navs" data-num="6">
+            <h3>Digital Footprint</h3>
+            <ul>
+                <li>Linkedin (must-have) {% if 'linkedin' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
+                </li>
+                <li>Github (must-have) {% if 'github' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
+                </li>
+                <li>Dribble {% if 'dribble' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
+                <li>Codeforces {% if 'codeforces' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
+                <li>Codechef {% if 'codechef' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
+                <li>Stackoverflow {% if 'stackoverflow' in resume_health.footprint_links %}✅{% else %}❌{% endif %}
+                </li>
+                <li>HackerRank {% if 'hackerrank' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
+                <li>Medium {% if 'medium' in resume_health.footprint_links %}✅{% else %}❌{% endif %}</li>
+            </ul>
+            <p>NOTE: Linkedin and GitHub are must have's for a techie!</p>
+        </div>
+
+        <div id="passive" class="navs" data-num="7">
+            <h3>Passive Language</h3>
+            {% if resume_health.passive_language|length > 0 %}
+            <ul>
+                {% for str in resume_health.passive_language %}
+                <li>{{ str }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>🙌 NONE FOUND</p>
+            {% endif %}
+            <p>NOTE: Passive language must most definitely not be there in a resume</p>
+        </div>
+
+        <div id="action" class="navs" data-num="8">
+            <h3>Action Verbs</h3>
+            {% if resume_health.action_verbs['verbs']|length > 0 %}
+            <p>
+                {% for verb in resume_health.action_verbs['verbs'] %}
+                <span class="skill">{{ verb }}</span>
+                {% endfor %}
+            </p>
+            {% else %}
+            <p>❌ NONE FOUND</p>
+            {% endif %}
+            <p>NOTE: Action verbs are to be used very frequently in a resume</p>
+        </div>
+
+        <div id="grammar" class="navs" data-num="9">
+
+        </div>
+
     </div>
 </div>
 
