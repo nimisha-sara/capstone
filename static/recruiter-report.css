@@ -2,9 +2,41 @@
     max-width: 60vw;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 16vh;
+    margin-top: 14vh;
 }
 
+.slide-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* match % */
+.progress-container {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    background-color: #434343;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #434343;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 5px solid rgb(0, 0, 0);
+    clip: rect(0, 100px, 200px, 0);
+    transition: clip 1s;
+}
+
+.progress-bar.fill {
+    clip: rect(0, 200px, 200px, 100px);
+}
+
+/* slideshow */
 
 .slideshow-container {
     position: relative;
@@ -12,9 +44,10 @@
 }
 
 .mySlides {
-    min-height: 20rem;
+    color: #181818;
+    min-height: 30rem;
     display: none;
-    padding: 80px;
+    padding: 20px 70px;
     overflow-x: scroll;
 }
 
@@ -45,9 +78,10 @@
     color: white;
 }
 
+/* Slide Navigation */
+
 .dot-container {
     text-align: center;
-    padding: 20px;
     background: #bbb;
     overflow-x: scroll;
     white-space: nowrap;
@@ -55,8 +89,8 @@
 
 .dot {
     cursor: pointer;
-    height: 15px;
-    width: 15px;
+    height: 5px;
+    width: 5px;
     margin: 0 2px;
     background-color: #ccc;
     border-radius: 50%;
@@ -66,7 +100,7 @@
 
 .active,
 .dot:hover {
-    background-color: #181818;
+    background-color: #434343;
 }
 
 /* scrollbar */

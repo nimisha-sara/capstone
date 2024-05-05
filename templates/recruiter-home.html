@@ -12,51 +12,41 @@
         $(".content").hide();
     }
 
-    $(document).ready(function () {
-        $("#google-link-btn").click(function () {
-            $("#google-link").show();
-            $("#excel").hide();
-            $("#upload").hide();
-        });
-        $("#excel-btn").click(function () {
-            $("#google-link").hide();
-            $("#excel").show();
-            $("#upload").hide();
-        });
-        $("#resume-btn").click(function () {
-            $("#google-link").hide();
-            $("#excel").hide();
-            $("#upload").show();
-        });
-    });
+    function display(buttonValue) {
+        $('.opt').hide()
+        $(`#${buttonValue}`).show()
+    }
 </script>
 <div class="content">
     <h1>Hey There <span class="hand-wave">👋</span></h1>
     <p style="margin-bottom: 8vh;">Find the best candidates for the job now!</p>
     <div>
-        <button id="google-link-btn" type="button">Drive link</button>
-        <button id="excel-btn" type="button">Excel</button>
-        <button id="resume-btn" type="button">Resume File</button>
+        <button id="google-link-btn" type="button" onclick="display('google-link')">Drive link</button>
+        <button id="excel-btn" type="button" onclick="display('excel')">Excel</button>
+        <button id="resume-btn" type="button" onclick="display('upload')">Resume File</button>
     </div>
 
-    <form id="upload" action="{{ url_for('resume_ranking')}}" method="post" enctype="multipart/form-data">
-        <textarea name="job_description" placeholder="Enter the JD"></textarea>
-        <div id="google-link">
-            <textarea name="google_link" placeholder="Paste the drive links seperated by a ','"></textarea><br>
-            <button type="submit" onclick="loading();" name="action" value="google_link">Upload</button>
-        </div>
-    
-        <div id="excel">
-            <p>NOTE: Ensure that there is only one col and there is no header</p>
-            <input type="file" name="excel"><br>
-            <button type="submit" onclick="loading();" name="action" value="excel">Upload</button>
-        </div>
-    
-        <div id="upload">
-            <input class="file-upload-button" type="file" name='files' multiple><br>
-            <button type="submit" onclick="loading();" name="action" value="upload">Upload</button>
-        </div>
-    </form>
+    <div>
+        <form action="{{ url_for('resume_ranking')}}" method="post" enctype="multipart/form-data" >
+            <textarea name="job_description" placeholder="Enter the JD"></textarea>
+            
+            <div id="google-link" class="opt" style="display: none;">
+                <textarea name="google_link" placeholder="Paste the drive links seperated by a ','"></textarea><br>
+                <button type="submit" onclick="loading();" name="action" value="google_link">Upload</button>
+            </div>
+        
+            <div id="excel" class="opt" style="display: none;">
+                <p>NOTE: Ensure that there is only one col and there is no header</p>
+                <input type="file" name="excel_file"><br>
+                <button type="submit" onclick="loading();" name="action" value="excel_file">Upload</button>
+            </div>
+        
+            <div id="upload" class="opt" style="display: none;">
+                <input class="file-upload-button" type="file" name='pdf_file' multiple><br>
+                <button type="submit" onclick="loading();" name="action" value="pdf_file">Upload</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="loader"></div>
