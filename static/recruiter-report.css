@@ -1,0 +1,81 @@
+.content {
+    max-width: 60vw;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 16vh;
+}
+
+
+.slideshow-container {
+    position: relative;
+    background: #ccc;
+}
+
+.mySlides {
+    min-height: 20rem;
+    display: none;
+    padding: 80px;
+    overflow-x: scroll;
+}
+
+.prev,
+.next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    margin-top: -30px;
+    padding: 16px;
+    color: #181818;
+    font-weight: bold;
+    font-size: 20px;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+}
+
+.next {
+    position: absolute;
+    right: 0;
+    border-radius: 3px 0 0 3px;
+}
+
+.prev:hover,
+.next:hover {
+    background-color: rgba(65, 65, 65, 0.8);
+    color: white;
+}
+
+.dot-container {
+    text-align: center;
+    padding: 20px;
+    background: #bbb;
+    overflow-x: scroll;
+    white-space: nowrap;
+}
+
+.dot {
+    cursor: pointer;
+    height: 15px;
+    width: 15px;
+    margin: 0 2px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: inline-block;
+    transition: background-color 0.6s ease;
+}
+
+.active,
+.dot:hover {
+    background-color: #181818;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 1px;
+}
+
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+}
