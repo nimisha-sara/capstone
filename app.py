@@ -42,12 +42,8 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
     pdf_reader = PDF([f"{filename}"])
 
     resume_text = [resume for resume in pdf_reader.process_pdf() if resume["status"]]
-    ner = [CustomNER().process_text(resume["text"]) for resume in resume_text]
-    # ner = {
-    #     key.lower(): [k.title() for k, v in ner[0].items() if v == key]
-    #     for key in set(ner[0].values())
-    # }
-
+    ner = [CustomNER().process_text(resume["text"]) for resume in resume_text][0]
+    
     job_role = JobClassifier().predict_job_role(resume_text[0]["text"])
 
     words_to_replace = ner["skill"] + ner["org"]
@@ -77,8 +73,6 @@ async def resume_ranking(
     google_link: str = File(...),
     excel_file: UploadFile = File(...),
 ):
-    print("\n\n========================================\n")
-    print(action, job_description, pdf_file, google_link, excel_file)
     if action == "pdf_file":
         if not pdf_file:
             raise FileNotFoundError("PDF File not Uploaded")
@@ -109,14 +103,11 @@ async def resume_ranking(
         else:
             google_link = google_link.split(",")
             pdf_reader = PDF(google_link).process_pdf(path_type="url")
-    else:
-        print(f"ERORRRRR: action is ==={action}===")
 
     resume_texts = [resume for resume in pdf_reader if resume["status"]]
     error_files = [
         [resume["filename"], resume["text"]] for resume in pdf_reader if not resume["status"]
     ]
-    print(f"\n\n========================================\n{resume_texts}\t{error_files}\n========================================\n")
     ranking = ResumeRanker().get_similarity(job_description, resume_texts)
 
     if action == "pdf_file":
