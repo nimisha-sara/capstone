@@ -13,33 +13,80 @@
 
 <div class="content">
     <div class="slideshow-container">
+        {% for key, value in ranking.items() %}
         <div class="mySlides">
-            <div>
-                
+            <div class="slide-header between">
+                <div style="padding-top: 10px;">
+                    <h2>{{ value.ner.per[0] }}</h2>
+                </div>
+                <div class="circle">{{ value.match }}%</div>
             </div>
-            <h2></h2>
-            <p class="author">- John Keats</p>
-        </div>
+            <div class="slide-body">
+                <div class="between">
+                    <div class="contact">
+                        {% if 'phone' in value.ner %}
+                        <p>📞 {{ value.ner.phone[0] }}</p>
+                        {% endif %}
+                        {% if 'email' in value.ner %}
+                        <p>📧 {{ value.ner.email[0]| lower }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="Education">
+                        {% if 'deg' in value.ner %}
+                        <p>🎓 {{ value.ner.deg[0] }}</p>
+                        {% endif %}
+                        {% if 'college' in value.ner %}
+                        <p>🏫 {{ value.ner.college[0] }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="org">
+                    {% if 'org' in value.ner %}
+                    <p>🏢 They have worked with - </p>
+                    {% for org in value.ner.org %}
+                    <span class="org bubble">{{ org }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="skill">
+                    <p>Skills</p>
+                    {% if 'skill' in value.ner %}
+                    {% for skill in value.ner.skill %}
+                    <span class="skill bubble">{{ skill }}</span>
+                    {% endfor %}
+                    {% endif %}
 
-        <div class="mySlides">
-            <q>But man is not made for defeat. A man can be destroyed but not defeated.</q>
-            <p class="author">- Ernest Hemingway</p>
+                    {% if 'lang' in value.ner %}
+                    <p>Languages: </p>
+                    {% for lang in value.ner.lang %}
+                    <span class="lang bubble">{{ lang }}</span>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="links">
+                    <p>Found some links!</p>
+                    {% if 'link' in value.ner %}
+                    {% for _link in value.ner.link %}
+                    <a href="{{ _link }}">🔗 {{ _link }}</a>
+                    {% endfor %}
+                    {% endif %}
+                    {% if 'link' in value %}
+                    {% for link in value.links %}
+                    <a href="{{ link }}">🔗 {{ link }}</a>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
         </div>
-
-        <div class="mySlides">
-            <q>I have not failed. I've just found 10,000 ways that won't work.</q>
-            <p class="author">- Thomas A. Edison</p>
-        </div>
-
+        {% endfor %}
         <a class="prev" onclick="plusSlides(-1)">❮</a>
         <a class="next" onclick="plusSlides(1)">❯</a>
-
     </div>
 
     <div class="dot-container">
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
+        {% for n in range(ranking| length) %}
+        <span class="dot" onclick="currentSlide({{ n }});"></span>
+        {% endfor %}
     </div>
 </div>
 
