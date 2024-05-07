@@ -1,13 +1,13 @@
+import os
+import re
+import shutil
+
 from fastapi import FastAPI, UploadFile, File, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-import os
-import re
-import shutil
 import pandas as pd
-from typing import Optional
 
 from utils import PDF, ResumeRanker, ResumeChecker
 from models import CustomNER, JobClassifier
@@ -43,17 +43,20 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
 
     resume_text = [resume for resume in pdf_reader.process_pdf() if resume["status"]]
     ner = [CustomNER().process_text(resume["text"]) for resume in resume_text][0]
-    
+
     job_role = JobClassifier().predict_job_role(resume_text[0]["text"])
 
-    words_to_replace = ner["skill"] + ner["org"]
-    words_to_replace = [re.escape(word) for word in words_to_replace]
-    replace_pattern = re.compile(
-        r"\b(?:" + "|".join(words_to_replace) + r")\b", flags=re.IGNORECASE
-    )
-    resume_text[0]["text"] = replace_pattern.sub("", resume_text[0]["text"])
-
     links = " ".join(resume_text[0]["links"])
+    stop_words = (
+        ner["skill"]
+        + ner["org"]
+        + ner["per"]
+        + ner["loc"]
+        + ner["education"]
+        + ner["deg"]
+    )
+    pattern = r"\b(?:" + "|".join(map(re.escape, stop_words)) + r")\b"
+    resume_text[0]["text"] = re.sub(pattern, "", resume_text[0]["text"])
 
     resume_health = ResumeChecker().perform_all_checks(resume_text[0]["text"] + links)
     shutil.rmtree("uploads")
@@ -63,10 +66,13 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
         context={"ner": ner, "job_role": job_role, "resume_health": resume_health},
     )
 
+
 def calculate_ranking(pdf_reader, job_description):
     resume_texts = [resume for resume in pdf_reader if resume["status"]]
     error_files = [
-        [resume["filename"], resume["text"]] for resume in pdf_reader if not resume["status"]
+        [resume["filename"], resume["text"]]
+        for resume in pdf_reader
+        if not resume["status"]
     ]
     ranking = ResumeRanker().get_similarity(job_description, resume_texts)
     return error_files, ranking
@@ -76,7 +82,7 @@ def calculate_ranking(pdf_reader, job_description):
 async def resume_ranking_pdf(
     request: Request,
     job_description: str = Form(...),
-    pdf_file: list[UploadFile] = File(...)
+    pdf_file: list[UploadFile] = File(...),
 ):
     os.mkdir("./uploads")
     filenames = []
@@ -101,7 +107,7 @@ async def resume_ranking_pdf(
 async def resume_ranking_excel(
     request: Request,
     job_description: str = Form(...),
-    excel_file: UploadFile = File(...)
+    excel_file: UploadFile = File(...),
 ):
     if not excel_file:
         raise FileNotFoundError("Excel File not Uploaded")
@@ -126,7 +132,7 @@ async def resume_ranking_excel(
 async def resume_ranking_drive(
     request: Request,
     job_description: str = Form(...),
-    google_link: UploadFile = File(...)
+    google_link: UploadFile = File(...),
 ):
     if not google_link:
         raise ValueError("Links not submitted")
