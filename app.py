@@ -9,7 +9,7 @@ import shutil
 import pandas as pd
 from typing import Optional
 
-from utils import PDF, GitHubStatistics, ResumeRanker, ResumeChecker
+from utils import PDF, ResumeRanker, ResumeChecker
 from models import CustomNER, JobClassifier
 
 
@@ -63,56 +63,77 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
         context={"ner": ner, "job_role": job_role, "resume_health": resume_health},
     )
 
-
-@app.post("/recruiter/match")
-async def resume_ranking(
-    request: Request,
-    job_description: str = Form(...),
-    action: str = Form(...),
-    pdf_file: list[UploadFile] = File(...),
-    google_link: str = File(...),
-    excel_file: UploadFile = File(...),
-):
-    if action == "pdf_file":
-        if not pdf_file:
-            raise FileNotFoundError("PDF File not Uploaded")
-        else:
-            os.mkdir("./uploads")
-            filenames = []
-            for file in pdf_file:
-                with open(f"uploads/{file.filename}", "wb") as buffer:
-                    shutil.copyfileobj(file.file, buffer)
-                filenames.append(f"./uploads/{file.filename}")
-
-            pdf_reader = PDF(filenames).process_pdf(path_type="file")
-    elif action == "excel_file":
-        if not excel_file:
-            raise FileNotFoundError("Excel File not Uploaded")
-
-        os.mkdir("./uploads")
-        with open(f"uploads/{excel_file.filename}", "wb") as buffer:
-            shutil.copyfileobj(excel_file.file, buffer)
-            filename = f"./uploads/{excel_file.filename}"
-
-        files = pd.read_excel(filename).iloc[:, 0].tolist()
-        pdf_reader = PDF(files).process_pdf(path_type="url")
-
-    elif action == "google_link":
-        if not google_link:
-            raise ValueError("Links not submitted")
-        else:
-            google_link = google_link.split(",")
-            pdf_reader = PDF(google_link).process_pdf(path_type="url")
-
+def calculate_ranking(pdf_reader, job_description):
     resume_texts = [resume for resume in pdf_reader if resume["status"]]
     error_files = [
         [resume["filename"], resume["text"]] for resume in pdf_reader if not resume["status"]
     ]
     ranking = ResumeRanker().get_similarity(job_description, resume_texts)
+    return error_files, ranking
 
-    if action == "pdf_file":
-        shutil.rmtree("uploads")
-    print(f"\n\n========================================\n{ranking}\n========================================\n")
+
+@app.post("/recruiter/match1")
+async def resume_ranking_pdf(
+    request: Request,
+    job_description: str = Form(...),
+    pdf_file: list[UploadFile] = File(...)
+):
+    os.mkdir("./uploads")
+    filenames = []
+    for file in pdf_file:
+        with open(f"uploads/{file.filename}", "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        filenames.append(f"./uploads/{file.filename}")
+
+    pdf_reader = PDF(filenames).process_pdf(path_type="file")
+    error_files, ranking = calculate_ranking(pdf_reader, job_description)
+
+    shutil.rmtree("uploads")
+
+    return templates.TemplateResponse(
+        request=request,
+        name="recruiter-match.html",
+        context={"ranking": ranking, "error": error_files},
+    )
+
+
+@app.post("/recruiter/match2")
+async def resume_ranking_excel(
+    request: Request,
+    job_description: str = Form(...),
+    excel_file: UploadFile = File(...)
+):
+    if not excel_file:
+        raise FileNotFoundError("Excel File not Uploaded")
+
+    os.mkdir("./uploads")
+    with open(f"uploads/{excel_file.filename}", "wb") as buffer:
+        shutil.copyfileobj(excel_file.file, buffer)
+        filename = f"./uploads/{excel_file.filename}"
+
+    files = pd.read_excel(filename).iloc[:, 0].tolist()
+    pdf_reader = PDF(files).process_pdf(path_type="url")
+    error_files, ranking = calculate_ranking(pdf_reader, job_description)
+
+    return templates.TemplateResponse(
+        request=request,
+        name="recruiter-match.html",
+        context={"ranking": ranking, "error": error_files},
+    )
+
+
+@app.post("/recruiter/match3")
+async def resume_ranking_drive(
+    request: Request,
+    job_description: str = Form(...),
+    google_link: UploadFile = File(...)
+):
+    if not google_link:
+        raise ValueError("Links not submitted")
+    else:
+        google_link = google_link.split(",")
+        pdf_reader = PDF(google_link).process_pdf(path_type="url")
+    error_files, ranking = calculate_ranking(pdf_reader, job_description)
 
     return templates.TemplateResponse(
         request=request,
