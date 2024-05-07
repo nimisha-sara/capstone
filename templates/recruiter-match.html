@@ -19,7 +19,9 @@
                 <div style="padding-top: 10px;">
                     <h2>{{ value.ner.per[0] }}</h2>
                 </div>
-                <div class="circle">{{ value.match }}%</div>
+                <div class="circle">
+                    <p>{{ value.match }}%</p>
+                </div>
             </div>
             <div class="slide-body">
                 <div class="between">
@@ -42,38 +44,54 @@
                 </div>
                 <div class="org">
                     {% if 'org' in value.ner %}
-                    <p>🏢 They have worked with - </p>
+                    <h3>🏢 They have worked with - </h3>
                     {% for org in value.ner.org %}
-                    <span class="org bubble">{{ org }}</span>
+                    <p class="org bubble" style="display: inline-block;">{{ org }}</p>
                     {% endfor %}
                     {% endif %}
                 </div>
                 <div class="skill">
-                    <p>Skills</p>
+                    <h3>Skills</h3>
                     {% if 'skill' in value.ner %}
                     {% for skill in value.ner.skill %}
-                    <span class="skill bubble">{{ skill }}</span>
+                    <p class="skill bubble" style="display: inline-block;">{{ skill }}</p>
                     {% endfor %}
                     {% endif %}
 
                     {% if 'lang' in value.ner %}
-                    <p>Languages: </p>
+                    <h3>Languages: </h3>
                     {% for lang in value.ner.lang %}
-                    <span class="lang bubble">{{ lang }}</span>
+                    <span class="lang bubble" style="display: inline-block;">{{ lang }}</span>
                     {% endfor %}
                     {% endif %}
                 </div>
                 <div class="links">
                     <p>Found some links!</p>
-                    {% if 'link' in value.ner %}
-                    {% for _link in value.ner.link %}
-                    <a href="{{ _link }}">🔗 {{ _link }}</a>
-                    {% endfor %}
-                    {% endif %}
-                    {% if 'link' in value %}
                     {% for link in value.links %}
-                    <a href="{{ link }}">🔗 {{ link }}</a>
+                    
+                    {% if '/' in link %}
+                        {% if '://' not in link %}
+                            {% set link = 'https://' + link %}
+                        {% endif %}
+
+                        {% if 'www.' not in link %}
+                            {% set link = 'https://www.' + link %}
+                        {% endif %}
+                        <a href="{{ link }}">🔗 {{ link }}</a>
+                    {% endif %}
                     {% endfor %}
+                </div>
+                <div class="github">
+                    <h3>GitHub</h3>
+                    {% if value.github|length > 0 %}
+                    <img src="https://github-readme-activity-graph.vercel.app/graph?username={{ value.github[0] }}&bg_color=000&point=fff&theme=github-compact"
+                        alt="{{ value.github[0] }}'s contribution graph" style="width: 45rem;">
+
+                    <img
+                        src="https://github-readme-stats.vercel.app/api?username={{ value.github[0] }}&show_icons=true&count_private=true&theme=radical">
+                    <img src="https://github-readme-stats.vercel.app/api/top-langs/?username={{ value.github[0] }}&layout=compact&theme=radical"
+                        alt="{{ value.github[0] }}'s language stats">
+
                     {% endif %}
                 </div>
             </div>

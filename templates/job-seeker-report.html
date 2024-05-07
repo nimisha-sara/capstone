@@ -43,7 +43,9 @@
             <h2 class="red">Hey there <span style="color: #cd0505;">_____</span></h2>
             <p>PS. I couldn't find your name in your Resume.</p><br>
             {% endif %}
+            <br>
             <p>Your profile seems to be best suited for the role of {{ job_role }}</p>
+            <br>
             <ul>
                 <li>Phone: {% if 'phone' in ner %}<span>{{ ner.phone[0] }} ✅</span>{% else %}<span
                         class="error">❌</span>{% endif %}</li>
@@ -69,21 +71,28 @@
         </div>
 
         <div id="contact" class="navs" data-num="3">
-            <h3>Grammar</h3>
+            <h3>Spelling</h3>
             <ul>
-                <li>Phone: {% if 'phone' in ner %}<span>{{ ner.phone[0] }} ✅</span>{% else %}<span
-                        class="error">❌</span>{% endif %}</li>
-                <li>Email: {% if 'email' in ner %}<span>{{ ner.email[0]|lower }} ✅</span>{% else %}<span
-                        class="error">❌</span>{% endif %}</li>
+                {% if resume_health.spell| length > 0 %}
+                {% for key, value in resume_health.spell.items() %}
+                <li>
+                    <span>{{ key }}</span> - {% for word in value %} <p style="display: inline-block;">{{ word }}</p> {%
+                    endfor %}
+                </li>
+                {% endfor %}
+                {% else %}
+                <p>🙌 NONE FOUND</p>
+                {% endif %}
             </ul>
+
         </div>
 
         <div id="skills" class="navs" data-num="4">
             <h3>Skills</h3>
             <p style="max-width: 40rem;">
                 {% for skill in ner.skill %}
-                <span class="skill">{{ skill }}</span>
-                {% endfor %}
+            <p class="skill" style="display: inline-block;">{{ skill }}</p>
+            {% endfor %}
             </p>
         </div>
 
@@ -92,8 +101,8 @@
             {% if resume_health.personal_pronouns|length > 0 %}
             <p>⛔
                 {% for pronoun in resume_health.personal_pronouns %}
-                <span class="skill">{{ pronoun }}</span>
-                {% endfor %}
+            <p class="skill" style="display: inline-block;">{{ pronoun }}</p>
+            {% endfor %}
             </p>
             {% else %}
             <p>🙌 NONE FOUND</p>
@@ -138,19 +147,14 @@
             {% if resume_health.action_verbs['verbs']|length > 0 %}
             <p>
                 {% for verb in resume_health.action_verbs['verbs'] %}
-                <span class="skill">{{ verb }}</span>
-                {% endfor %}
+            <p class="skill" style="display: inline-block;">{{ verb }}</p>
+            {% endfor %}
             </p>
             {% else %}
             <p>❌ NONE FOUND</p>
             {% endif %}
             <p>NOTE: Action verbs are to be used very frequently in a resume</p>
         </div>
-
-        <div id="grammar" class="navs" data-num="9">
-
-        </div>
-
     </div>
 </div>
 

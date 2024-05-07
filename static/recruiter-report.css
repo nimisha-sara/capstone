@@ -1,3 +1,7 @@
+h3{
+    margin-top: 5px;
+}
+
 .content {
     max-width: 60vw;
     margin-left: auto;
@@ -23,21 +27,24 @@
     background-color: #fcfcfc;
     color: #181818;
     padding: 6px;
-    margin: 8px;
-    margin-top: 15px;
+    margin: 5px;
     font-weight: 600;
     border-radius: 25px;
 }
 
 .circle{
-    border-radius: 50%;
     height: 6rem;
     width: 6rem;
     background-color: #181818;
     color: #ccc;
     font-size: large;
-    margin-left: auto;
-    margin-right: auto;
+}
+
+.circle p{
+    font-size: larger;
+    font-weight: 900;
+    padding-top: 30%;
+    padding-left: 20%;
 }
 
 /* slideshow */
@@ -49,7 +56,7 @@
 
 .mySlides {
     color: #181818;
-    min-height: 30rem;
+    max-height: 30rem;
     display: none;
     padding: 20px 70px;
     overflow-x: scroll;

@@ -21,30 +21,30 @@
     <h1>Hey There <span class="hand-wave">👋</span></h1>
     <p style="margin-bottom: 8vh;">Find the best candidates for the job now!</p>
     <div>
-        <button id="google-link-btn" type="button" onclick="display('google-link')">Drive link</button>
-        <button id="excel-btn" type="button" onclick="display('excel')">Excel</button>
         <button id="resume-btn" type="button" onclick="display('upload')">Resume File</button>
+        <button id="excel-btn" type="button" onclick="display('excel')">Excel</button>
+        <button id="google-link-btn" type="button" onclick="display('google-link')">Drive link</button>
     </div>
 
     <div>
-        <form action="{{ url_for('resume_ranking')}}" method="post" enctype="multipart/form-data" >
-            <textarea name="job_description" placeholder="Enter the JD"></textarea>
-            
-            <div id="google-link" class="opt" style="display: none;">
-                <textarea name="google_link" placeholder="Paste the drive links seperated by a ','"></textarea><br>
-                <button type="submit" onclick="loading();" name="action" value="google_link">Upload</button>
-            </div>
-        
-            <div id="excel" class="opt" style="display: none;">
-                <p>NOTE: Ensure that there is only one col and there is no header</p>
-                <input type="file" name="excel_file"><br>
-                <button type="submit" onclick="loading();" name="action" value="excel_file">Upload</button>
-            </div>
-        
-            <div id="upload" class="opt" style="display: none;">
-                <input class="file-upload-button" type="file" name='pdf_file' multiple><br>
-                <button type="submit" onclick="loading();" name="action" value="pdf_file">Upload</button>
-            </div>
+        <form id="upload" class="opt" style="display: none;" action="{{ url_for('resume_ranking_pdf')}}" method="post"
+            enctype="multipart/form-data">
+            <textarea name="job_description" placeholder="Enter the JD"></textarea><br>
+            <input class="file-upload-button" type="file" name='pdf_file' multiple><br>
+            <button type="submit" onclick="loading();" name="action" value="pdf_file">Upload</button>
+        </form>
+        <form id="excel" class="opt" style="display: none;" action="{{ url_for('resume_ranking_excel')}}" method="post"
+            enctype="multipart/form-data">
+            <textarea name="job_description" placeholder="Enter the JD"></textarea><br>
+            <p>NOTE: Ensure that there is only one col and there is no header</p>
+            <input type="file" name="excel_file"><br>
+            <button type="submit" onclick="loading();" name="action" value="excel_file">Upload</button>
+        </form>
+        <form id="google-link" class="opt" style="display: none;" action="{{ url_for('resume_ranking_drive')}}"
+            method="post">
+            <textarea name="job_description" placeholder="Enter the JD"></textarea><br>
+            <textarea name="google_link" placeholder="Paste the drive links seperated by a ','"></textarea><br>
+            <button type="submit" onclick="loading();" name="action" value="google_link">Upload</button>
         </form>
     </div>
 </div>
