@@ -3,6 +3,7 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.tag import pos_tag
 import language_tool_python
+from spellchecker import SpellChecker
 
 
 nltk.download('averaged_perceptron_tagger')
@@ -11,7 +12,7 @@ nltk.download('punkt')
 
 class ResumeChecker:
     def __init__(self):
-        self.tool = language_tool_python.LanguageTool('en-US')
+        self.tool = SpellChecker()
 
         self.strong_action_verbs = [
             "Accelerated", "Achieved", "Attained", "Completed", "Conceived", "Convinced", "Discovered",
@@ -30,7 +31,7 @@ class ResumeChecker:
             "my", "your", "his", "her", "its", "our", "their", "mine", "yours", "hers", "ours", "theirs"
         ]
 
-    def grammar_check(self, text: str) -> list:
+    def spell_check(self, text: str) -> list:
         """
         Check grammar and spelling in the text
 
@@ -40,8 +41,17 @@ class ResumeChecker:
         Returns:
             list: List of detected grammar and spelling errors.
         """
-        matches = self.tool.check(text)
-        errors = [[match.message, match.replacements, ] for match in matches]
+        errors = {}
+        words = text.split()
+        misspelled = self.tool.unknown(words)
+        print(misspelled)
+        if misspelled:
+            for word in misspelled:
+                print(word)
+                try:
+                    errors[word] = list(self.tool.candidates(word))[:3]
+                except:
+                    pass
         return errors
 
     def check_action_verbs(self, text: str) -> dict:
@@ -142,7 +152,7 @@ class ResumeChecker:
             dict: Dictionary containing the results of all checks.
         """
         return {
-            "grammar_errors": self.grammar_check(text),
+            "spell": self.spell_check(text),
             "action_verbs": self.check_action_verbs(text),
             "passive_language": self.check_passive_language(text),
             "footprint_links": self.check_digital_footprint_links(text),

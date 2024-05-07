@@ -29,7 +29,7 @@ class PDF:
         """
         lines = text.split("\n")
         non_empty_lines = "\n".join(filter(lambda line: line.strip() != "", lines))
-        for char in ["(", ")", ",", "[", ";", "|"]:
+        for char in ["(", ")", ",", "[", ";", "|", "●"]:
             non_empty_lines = non_empty_lines.replace(char, " ")
         non_empty_lines = non_empty_lines.replace("  ", " ")
         return self.handle_unicode(non_empty_lines)

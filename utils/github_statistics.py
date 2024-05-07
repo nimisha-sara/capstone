@@ -45,9 +45,7 @@ class GitHubStatistics:
         last_year_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%dT%H:%M:%SZ")
         commits = 0
         events_url = f"https://api.github.com/users/{self.username}/events"
-        headers = {"Authorization": f"token {self.access_token}"}
         response = requests.get(events_url)
-        response = requests.get(events_url, headers=headers)
         if response.status_code == 200:
             events = response.json()
             for event in events:
@@ -111,11 +109,9 @@ class GitHubStatistics:
         print("\n=======================\n",user_data, "\n=======================\n")
         if user_data:
             repos_url = user_data["repos_url"]
-            headers = {"Authorization": f"token {self.access_token}"}
-            repos_response = requests.get(repos_url, headers=headers)
+            repos_response = requests.get(repos_url)
             if repos_response.status_code == 200:
                 repos = repos_response.json()
-                prs = self._get_all_prs()
                 return {
                     "name": user_data["name"],
                     "followers": user_data["followers"],
@@ -129,11 +125,10 @@ class GitHubStatistics:
                         "description": max(repos, key=lambda x: x["created_at"])["description"]
                     },
                     "stars_earned": sum(repo["stargazers_count"] for repo in repos),
-                    "pull_requests": len(prs),
                     "total_public_repos_created": self._get_total_public_repos()
                 }
             else:
-                return {"Error": repos_response.status_code}
+                return {"Error": repos_response}
         else:
             return None
 
