@@ -47,14 +47,11 @@ async def resume_report(request: Request, file: UploadFile = File(...)):
     job_role = JobClassifier().predict_job_role(resume_text[0]["text"])
 
     links = " ".join(resume_text[0]["links"])
-    stop_words = (
-        ner["skill"]
-        + ner["org"]
-        + ner["per"]
-        + ner["loc"]
-        + ner["education"]
-        + ner["deg"]
-    )
+    stop_words = []
+    for key in ner.keys():
+        if key in ["skill", "org", "per", "loc", "education", "deg"]:
+            stop_words.extend(ner[key])
+
     pattern = r"\b(?:" + "|".join(map(re.escape, stop_words)) + r")\b"
     resume_text[0]["text"] = re.sub(pattern, "", resume_text[0]["text"])
 
@@ -120,6 +117,8 @@ async def resume_ranking_excel(
     files = pd.read_excel(filename).iloc[:, 0].tolist()
     pdf_reader = PDF(files).process_pdf(path_type="url")
     error_files, ranking = calculate_ranking(pdf_reader, job_description)
+
+    shutil.rmtree("uploads")
 
     return templates.TemplateResponse(
         request=request,
