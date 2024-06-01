@@ -36,7 +36,7 @@
         <form id="excel" class="opt" style="display: none;" action="{{ url_for('resume_ranking_excel')}}" method="post"
             enctype="multipart/form-data">
             <textarea name="job_description" placeholder="Enter the JD"></textarea><br>
-            <p>NOTE: Ensure that there is only one col and there is no header</p>
+            <p>NOTE: Ensure that there is only one col and with header</p>
             <input type="file" name="excel_file"><br>
             <button type="submit" onclick="loading();" name="action" value="excel_file">Upload</button>
         </form>

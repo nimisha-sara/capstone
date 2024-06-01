@@ -25,13 +25,12 @@
         <div class="links">
             <button id="name-btn" class="btn" onclick="navsDisplay('name');">Name</button>
             <button id="sections-btn" class="btn" onclick="navsDisplay('sections');">Sections</button>
-            <button id="contact-btn" class="btn" onclick="navsDisplay('contact');">Contact</button>
+            <button id="contact-btn" class="btn" onclick="navsDisplay('contact');">Grammar</button>
             <button id="skills-btn" class="btn" onclick="navsDisplay('skills');">Skills</button>
             <button id="pronoun-btn" class="btn" onclick="navsDisplay('pronoun');">Personal Pronoun</button>
             <button id="footprint-btn" class="btn" onclick="navsDisplay('footprint');">Digital Footprint</button>
             <button id="passive-btn" class="btn" onclick="navsDisplay('passive');">Passive Language</button>
             <button id="action-btn" class="btn" onclick="navsDisplay('action');">Action Verbs</button>
-            <!-- <button id="grammar-btn" onclick="navsDisplay('grammar');">Grammar</button> -->
         </div>
     </div>
 
@@ -71,14 +70,21 @@
         </div>
 
         <div id="contact" class="navs" data-num="3">
-            <h3>Spelling</h3>
+            <h3>Grammar</h3>
             <ul>
-                {% if resume_health.spell| length > 0 %}
-                {% for key, value in resume_health.spell.items() %}
-                <li>
-                    <span>{{ key }}</span> - {% for word in value %} <p style="display: inline-block;">{{ word }}</p> {%
-                    endfor %}
-                </li>
+                {% if resume_health.grammar| length > 0 %}
+                {% for error in resume_health.grammar %}
+                <div class="grammar-errors">
+                    <p style="color: #f38282;">{{ error.message }}</p>
+                    <p>{{ error.text[:error.error_start] }} <span style="background-color: #f38282;">{{
+                                error.text[error.error_start:error.error_end] }}</span> {{ error.text[error.error_end:]
+                            }}</p>
+                    {% if error.suggestions| length > 0 %}
+                    {% for suggestion in error.suggestions %}
+                    <p class="skill" style="background-color: #5baa5b; display: inline-block;">{{ suggestion }}</p>
+                    {% endfor %}
+                    {% endif %}
+                </div>
                 {% endfor %}
                 {% else %}
                 <p>🙌 NONE FOUND</p>

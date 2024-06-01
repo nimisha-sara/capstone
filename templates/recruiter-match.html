@@ -7,10 +7,6 @@
 
 {% block content %}
 
-<div class="options">
-    <button>download <span class="material-symbols-outlined">download</span></button>
-</div>
-
 <div class="content">
     <div class="slideshow-container">
         {% for key, value in ranking.items() %}
@@ -68,16 +64,16 @@
                 <div class="links">
                     <p>Found some links!</p>
                     {% for link in value.links %}
-                    
-                    {% if '/' in link %}
-                        {% if '://' not in link %}
-                            {% set link = 'https://' + link %}
-                        {% endif %}
 
-                        {% if 'www.' not in link %}
-                            {% set link = 'https://www.' + link %}
-                        {% endif %}
-                        <a href="{{ link }}">🔗 {{ link }}</a>
+                    {% set link = link.lower() %}
+                    {% if '/' in link %}
+                    {% if "www." in link.lower() %}
+                        {% set link = "https://www." + link.split("www.")[-1] %}
+                    {% else %}
+                        {% set link = "https://www." + link %}
+                    {% endif %}
+
+                    <a href="{{ link }}">🔗 {{ link }}</a>
                     {% endif %}
                     {% endfor %}
                 </div>
@@ -91,7 +87,8 @@
                         src="https://github-readme-stats.vercel.app/api?username={{ value.github[0] }}&show_icons=true&count_private=true&theme=radical">
                     <img src="https://github-readme-stats.vercel.app/api/top-langs/?username={{ value.github[0] }}&layout=compact&theme=radical"
                         alt="{{ value.github[0] }}'s language stats">
-
+                    {% else %}
+                    <p>None Found!!</p>
                     {% endif %}
                 </div>
             </div>
